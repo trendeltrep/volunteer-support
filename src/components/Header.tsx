@@ -1,16 +1,24 @@
 import { AppBar, Toolbar, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
+    const { user, volunteer, logout } = useAuth();
+    
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Volunteer Support
-        </Typography>
-        <Button color="inherit" component={Link} to="/">Home</Button>
-        <Button color="inherit">Поиск</Button>
-        <Button color="inherit">Войти</Button>
+      <Button color="inherit" component={Link} to="/">Home</Button>
+          <Button color="inherit" component={Link} to="/search">Поиск по сборам</Button>
+          {user ? (
+            <>
+              {user.role === "Volunteer" && <Button color="inherit" component={Link} to="/requirements">Требования</Button>}
+              <Button color="inherit" component={Link} to="/profile">Профиль</Button>
+              <Button color="inherit" onClick={logout}>Выйти</Button>
+            </>
+          ) : (
+            <Button color="inherit" component={Link} to="/login">Войти</Button>
+          )}
       </Toolbar>
     </AppBar>
   );
