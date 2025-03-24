@@ -16,6 +16,7 @@ export interface UserAccount {
   id: string;
   email: string;
   role: "Volunteer" | "Recipient";
+  profilePic?: string;
 }
 
 export interface Volunteer {
@@ -26,6 +27,7 @@ export interface Volunteer {
   age: number;
   rating: number;
   totalReports: number;
+  userAccount: UserAccount;
 }
 
 export interface Recipient {
@@ -34,5 +36,7 @@ export interface Recipient {
   surname: string;
   phone: string;
   needs: string;
+  userAccount: UserAccount;
 }
+
   

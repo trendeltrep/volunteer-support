@@ -16,9 +16,10 @@ const mockVolunteer: Volunteer = {
     age: 28,
     rating: 4.7,
     totalReports: 15,
+    userAccount: mockUserAccount,
   };
 
-const Profile = () => {
+const VolunteerProfile = () => {
   const { user, volunteer } = useAuth();
 
   if (!mockUserAccount) {
@@ -48,4 +49,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default VolunteerProfile;
