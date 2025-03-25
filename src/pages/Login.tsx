@@ -18,14 +18,14 @@ const Login = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>
-        Выберите роль:
+        Увійти як:
       </Typography>
       <Stack spacing={2}>
         <Button variant="contained" onClick={() => handleLogin("Volunteer")}>
-          Войти как Волонтёр
+          Волонтер
         </Button>
         <Button variant="contained" color="secondary" onClick={() => handleLogin("Recipient")}>
-          Войти как Получатель
+          Отримувач
         </Button>
       </Stack>
     </Container>

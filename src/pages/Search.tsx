@@ -23,14 +23,14 @@ const Search = () => {
       const response = await api.get<Fund[]>("/funds/search", { params: { query: searchQuery } });
       setFunds(response.data);
     } catch (err) {
-      setError("Ошибка загрузки данных");
+      setError("error fetching data");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFunds(""); // Загружаем все сборы при первом открытии страницы
+    fetchFunds(""); 
   }, []);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +42,7 @@ const Search = () => {
     <Container sx={{ width: 1024, mt: 4 }}>
       <TextField
         fullWidth
-        label="Поиск сборов"
+        label="Пошук зборів"
         variant="outlined"
         value={query}
         onChange={handleSearch}

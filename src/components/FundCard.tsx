@@ -14,8 +14,8 @@ const FundCard = ({ fund }: { fund: Fund }) => {
       </Box>
       <CardContent>
         <Typography variant="h6">{fund.name}</Typography>
-        <Typography variant="body2">Организатор: {fund.volunteer}</Typography>
-        <Typography variant="body2">Получатель: {fund.recipient}</Typography>
+        <Typography variant="body2">Організатор: {fund.volunteer}</Typography>
+        <Typography variant="body2">Отримувач: {fund.recipient}</Typography>
       </CardContent>
     </Card>
   );

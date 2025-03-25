@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { Container, Typography, Card, CardContent, Avatar } from "@mui/material";
 
 const RecipientProfile = () => {
-  const { user } = useAuth();
+  const { user, recipient } = useAuth();
 
   if (!user || user.role !== "Recipient") {
     return <Typography variant="h6" color="error">Доступ запрещён</Typography>;
@@ -17,7 +17,7 @@ const RecipientProfile = () => {
             src={user.profilePic || "/default-avatar.png"}
           />
           <Typography variant="body1"><strong>Email:</strong> {user.email}</Typography>
-          {/* <Typography variant="body1"><strong>О себе:</strong> {user.bio || "Нет информации"}</Typography> */}
+          <Typography variant="body1"><strong>Про себе:</strong> {recipient?.phone || "Нет информации"}</Typography>
         </CardContent>
       </Card>
     </Container>

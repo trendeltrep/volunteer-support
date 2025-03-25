@@ -23,25 +23,25 @@ const VolunteerProfile = () => {
   const { user, volunteer } = useAuth();
 
   if (!mockUserAccount) {
-    return <Typography variant="h6">Вы не авторизованы</Typography>;
+    return <Typography variant="h6">Ви не авторизовані</Typography>;
   }
 
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
       <Paper sx={{ p: 3 }}>
-        <Typography variant="h4">Профиль</Typography>
-        <Typography variant="h6">Личные данные</Typography>
+        <Typography variant="h4">Профіль</Typography>
+        <Typography variant="h6">Особисті дані</Typography>
         <Typography>Email: {mockUserAccount.email}</Typography>
         <Typography>Роль: {mockUserAccount.role}</Typography>
 
         {mockVolunteer && (
           <>
-            <Typography variant="h6" sx={{ mt: 2 }}>Информация о волонтере</Typography>
-            <Typography>Имя: {mockVolunteer.name} {mockVolunteer.surname}</Typography>
+            <Typography variant="h6" sx={{ mt: 2 }}>Інформація волонтера</Typography>
+            <Typography>Ім'я: {mockVolunteer.name} {mockVolunteer.surname}</Typography>
             <Typography>Телефон: {mockVolunteer.phone}</Typography>
-            <Typography>Возраст: {mockVolunteer.age}</Typography>
+            <Typography>Вік: {mockVolunteer.age}</Typography>
             <Typography>Рейтинг: {mockVolunteer.rating}</Typography>
-            <Typography>Количество отчетов: {mockVolunteer.totalReports}</Typography>
+            <Typography>Кількість звітів: {mockVolunteer.totalReports}</Typography>
           </>
         )}
       </Paper>

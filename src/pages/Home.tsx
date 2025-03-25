@@ -3,6 +3,7 @@ import FundCard from "../components/FundCard";
 import { Fund } from "../types";
 import { useState, useEffect } from "react";
 import { api } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const mockFunds: Fund[] = [
   { id: "1", name: "Помощь детям", image: "/images/fund1.jpg", progress: 60, isHot: true, volunteer: "Иван", recipient: "Орфан" },
@@ -13,11 +14,12 @@ const Home = () => {
     const [funds, setFunds] = useState<Fund[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
   
     useEffect(() => {
       const fetchFunds = async () => {
         try {
-          const response = await api.get<Fund[]>("/funds"); // Запрос к бэкенду
+          const response = await api.get<Fund[]>("/funds");
           setFunds(response.data);
         } catch (err) {
           setError("Ошибка загрузки данных");
@@ -25,15 +27,14 @@ const Home = () => {
           setLoading(false);
         }
       };
-  
       fetchFunds();
     }, []);
-    
+
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
       <Grid container spacing={2}>
         {mockFunds.map((fund) => (
-          <Grid item key={fund.id}>
+          <Grid item key={fund.id} onClick={() => navigate(`/funds/${fund.id}`)} sx={{ cursor: "pointer" }}>
             <FundCard fund={fund} />
           </Grid>
         ))}
