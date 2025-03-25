@@ -63,7 +63,7 @@ const Requirements = () => {
   return (
     <Container maxWidth="sm">
       <Button variant="contained" sx={{ mt: 4, mb: 2 }} onClick={handleOpen}>
-        Создать
+        Створити
       </Button>
 
       {requirements.map((req, index) => (

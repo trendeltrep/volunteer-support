@@ -4,14 +4,13 @@ import Home from "./pages/Home";
 import Search from "./pages/Search";
 import VolunteerProfile from "./pages/VolunteerProfile";
 import Login from "./pages/Login";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import RecipientProfile from "./pages/RecipientProfile";
 import Requirements from "./pages/Requirements";
+import FundDetails from "./pages/FundDetails";
 
 const App = () => {
 
-  const { user } = useAuth();
-  
   return (
     <AuthProvider>
       <Header />
@@ -22,9 +21,8 @@ const App = () => {
           <Route path="/volunteer" element={<VolunteerProfile />} />
           <Route path="/recipient" element={<RecipientProfile />} />
           <Route path="/requirements" element={<Requirements />} />
+          <Route path="/funds/:id" element={<FundDetails />} />
 
-          {/* {user?.role === "Volunteer" && <Route path="/profile" element={<VolunteerProfile />} />} */}
-          {/* {user?.role === "Recipient" && <Route path="/profile" element={<RecipientProfile />} />} */}
       </Routes>
     </AuthProvider>
   );
