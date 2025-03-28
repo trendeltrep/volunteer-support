@@ -3,6 +3,7 @@ import { Container, Grid, CircularProgress, Typography, TextField } from "@mui/m
 import FundCard from "../components/FundCard";
 import { Fund } from "../types";
 import { api } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const mockFunds: Fund[] = [
   { id: "1", name: "Помощь детям", image: "/images/fund1.jpg", progress: 60, isHot: true, volunteer: "Иван", recipient: "Орфан" },
@@ -14,6 +15,8 @@ const Search = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState<string>("");
+  const navigate = useNavigate();
+
 
   const fetchFunds = async (searchQuery: string) => {
     setLoading(true);
@@ -52,7 +55,7 @@ const Search = () => {
       {error && <Typography color="error">{error}</Typography>}
       <Grid container spacing={2}>
         {funds.map((fund) => (
-          <Grid item key={fund.id}>
+          <Grid item key={fund.id} onClick={() => navigate(`/funds/${fund.id}`)} sx={{ cursor: "pointer" }}>
             <FundCard fund={fund} />
           </Grid>
         ))}

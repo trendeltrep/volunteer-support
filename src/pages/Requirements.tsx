@@ -1,176 +1,144 @@
-import { useState } from "react";
-import {
-  Container,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Modal,
-  Box,
-  TextField,
-  Select,
-  MenuItem,
-  IconButton,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useState, useEffect } from "react";
+import { Container, Button, Typography, Card, CardContent, Box } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
+import CreateRequirementModal from "../modals/CreateRequirementModal";
+import CreateFundModal from "../modals/CreateFundModal";
+import { Volunteer, Recipient } from "../types";
 
-const categories = ["Food", "Medicine", "Equipment", "Other"];
+// Мокнутые профили
+const mockVolunteer: Volunteer = {
+  id: "vol-456",
+  name: "Иван",
+  surname: "Петров",
+  phone: "+380501234567",
+  age: 28,
+  rating: 4.7,
+  totalReports: 15,
+  userAccount: {
+    id: "user-123",
+    email: "volunteer@example.com",
+    role: "Volunteer",
+  },
+};
+
+const mockRecipient: Recipient = {
+  id: "rec-789",
+  name: "Анна",
+  surname: "Сидорова",
+  phone: "+380501234567",
+  needs: "Помощь в покупке продуктов",
+  userAccount: {
+    id: "user-789",
+    email: "recipient@example.com",
+    role: "Recipient",
+  },
+};
+
+// Мокнутые нужды
+const mockRequirements = [
+  {
+    title: "Продукты для семьи",
+    createdBy: mockRecipient,
+    items: [
+      { name: "Молоко", quantity: 2 },
+      { name: "Хлеб", quantity: 3 },
+      { name: "Макароны", quantity: 1 },
+    ],
+  },
+  {
+    title: "Одежда для детей",
+    createdBy: mockRecipient,
+    items: [
+      { name: "Куртка зимняя", quantity: 2 },
+      { name: "Шапка", quantity: 4 },
+    ],
+  },
+];
 
 const Requirements = () => {
-  const { recipient } = useAuth(); // Берем данные о получателе
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [items, setItems] = useState([{ category: "", name: "", quantity: 1 }]);
+  const { user } = useAuth();
   const [requirements, setRequirements] = useState<any[]>([]);
+  const [openRequirementModal, setOpenRequirementModal] = useState(false);
+  const [selectedRequirement, setSelectedRequirement] = useState<any | null>(null);
 
-  if (!recipient) {
-    return <Typography variant="h6" color="error">Доступ запрещён</Typography>;
-  }
+  useEffect(() => {
+    setRequirements(mockRequirements);
+  }, []);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    setTitle("");
-    setItems([{ category: "", name: "", quantity: 1 }]);
+  const handleCreateRequirement = (requirement: any) => {
+    setRequirements([...requirements, { ...requirement, createdBy: mockRecipient }]);
   };
 
-  const addItem = () => {
-    setItems([...items, { category: "", name: "", quantity: 1 }]);
-  };
-
-  const removeItem = (index: number) => {
-    setItems(items.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = () => {
-    if (!title.trim() || items.some((item) => !item.category || !item.name.trim())) {
-      alert("Заполните все поля!");
-      return;
-    }
-
-    const newRequirement = {
-      title,
-      items,
-      createdBy: `${recipient.name} ${recipient.surname}`,
-    };
-
-    setRequirements([...requirements, newRequirement]);
-    handleClose();
+  const handleCreateFund = (fund: any) => {
+    console.log("Збір створено:", fund);
   };
 
   return (
-    <Container maxWidth="sm">
-      <Button variant="contained" sx={{ mt: 4, mb: 2 }} onClick={handleOpen}>
-        Створити
-      </Button>
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
 
+      {user?.role === "Recipient" && (
+        <Button
+          variant="contained"
+          sx={{ mt: 2, mb: 3, width: "100%" }}
+          onClick={() => setOpenRequirementModal(true)}
+        >
+          Створити потребу
+        </Button>
+      )}
+
+
+      {requirements.length === 0 && (
+        <Typography variant="h6" textAlign="center" sx={{ mt: 4, color: "gray" }}>
+          Немає потреб
+        </Typography>
+      )}
+
+    
       {requirements.map((req, index) => (
-        <Card key={index} sx={{ mb: 2 }}>
+        <Card
+          key={index}
+          sx={{
+            mb: 2,
+            cursor: user?.role === "Volunteer" ? "pointer" : "default",
+            transition: "0.3s",
+            "&:hover": {
+              boxShadow: user?.role === "Volunteer" ? 6 : 2, 
+            },
+          }}
+          onClick={() => user?.role === "Volunteer" && setSelectedRequirement(req)}
+        >
           <CardContent>
-            <Typography variant="h6">{req.title}</Typography>
-            <Typography variant="body2" color="textSecondary">
-              Створив: {req.createdBy}
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>{req.title}</Typography>
+            <Typography variant="body2" sx={{ color: "gray", mb: 1 }}>
+              Створив: {req.createdBy.name} {req.createdBy.surname}
             </Typography>
-            {req.items.map((item: any, idx: number) => (
-              <Typography key={idx} variant="body2">
-                {item.category} - {item.name} ({item.quantity})
+
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="body2" fontWeight="bold">
+                Предмети:
               </Typography>
-            ))}
+              {req.items.map((item: any, idx: any) => (
+                <Typography key={idx} variant="body2">
+                  {item.name} - {item.quantity} шт.
+                </Typography>
+              ))}
+            </Box>
           </CardContent>
         </Card>
       ))}
 
-      {/* Модальное окно */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "white",
-            p: 3,
-            borderRadius: 2,
-            boxShadow: 24,
-            width: "400px",
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Новое требование
-          </Typography>
-          <TextField
-            fullWidth
-            label="Назва потреби"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            sx={{ mb: 2 }}
-          />
+      <CreateRequirementModal
+        open={openRequirementModal}
+        onClose={() => setOpenRequirementModal(false)}
+        onSubmit={handleCreateRequirement}
+      />
 
-          {items.map((item, index) => (
-            <Box key={index} sx={{ display: "flex", gap: 1, alignItems: "center", mb: 1 }}>
-              <Select
-                value={item.category}
-                onChange={(e) => {
-                  const newItems = [...items];
-                  newItems[index].category = e.target.value;
-                  setItems(newItems);
-                }}
-                displayEmpty
-                sx={{ flex: 1 }}
-              >
-                <MenuItem value="" disabled>
-                  Категорії
-                </MenuItem>
-                {categories.map((cat) => (
-                  <MenuItem key={cat} value={cat}>
-                    {cat}
-                  </MenuItem>
-                ))}
-              </Select>
-
-              <TextField
-                label="Назва предмету"
-                value={item.name}
-                onChange={(e) => {
-                  const newItems = [...items];
-                  newItems[index].name = e.target.value;
-                  setItems(newItems);
-                }}
-                sx={{ flex: 1 }}
-              />
-
-              <TextField
-                label="Кількість"
-                type="number"
-                value={item.quantity}
-                onChange={(e) => {
-                  const newItems = [...items];
-                  newItems[index].quantity = parseInt(e.target.value) || 1;
-                  setItems(newItems);
-                }}
-                sx={{ width: "80px" }}
-              />
-
-              <IconButton color="error" onClick={() => removeItem(index)}>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          ))}
-
-          <Button startIcon={<AddIcon />} onClick={addItem} sx={{ mt: 2 }}>
-            Добавити
-          </Button>
-
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-            <Button onClick={handleClose}>Отмена</Button>
-            <Button variant="contained" onClick={handleSubmit}>
-              Створити
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+      <CreateFundModal
+        open={!!selectedRequirement}
+        onClose={() => setSelectedRequirement(null)}
+        requirement={selectedRequirement}
+        onSubmit={handleCreateFund}
+      />
     </Container>
   );
 };

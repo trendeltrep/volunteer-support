@@ -17,6 +17,10 @@ const Header = () => {
                 <Button color="inherit" component={Link} to="/requirements">Потреби</Button>
               )}
               {user?.role === "Volunteer" && (
+                <Button color="inherit" component={Link} to="/requirements">Потреби</Button>
+              )}
+
+              {user?.role === "Volunteer" && (
                 <Button color="inherit" component={Link} to="/volunteer">Профіль</Button>
               )}
               {user?.role === "Recipient" && (
