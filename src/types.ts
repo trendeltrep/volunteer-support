@@ -7,6 +7,26 @@ export interface Fund {
   volunteer: string;
   recipient: string;
 }
+
+export interface RequirementItem {
+  name: string;
+  quantity: number;
+  category: "Food" | "Medicine" |"Equipment" | "Other";
+}
+
+export interface Requirement {
+  id: string; 
+  title: string;
+  createdBy: Recipient;
+  items: {
+    name: string;
+    quantity: number;
+    category: string;
+  }[];
+  funds?: Fund[];
+}
+
+
   
 export interface SearchParams {
   query: string;

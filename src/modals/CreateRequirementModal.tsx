@@ -1,50 +1,76 @@
-import { useState } from "react";
+// src/modals/CreateRequirementModal.tsx
+
 import {
   Modal,
   Box,
-  Typography,
   TextField,
+  Button,
   Select,
   MenuItem,
   IconButton,
-  Button,
+  Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const categories = ["Food", "Medicine", "Equipment", "Other"];
 
-interface CreateRequirementModalProps {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: { title: string; items: { category: string; name: string; quantity: number }[] }) => void;
-}
-
-const CreateRequirementModal = ({ open, onClose, onSubmit }: CreateRequirementModalProps) => {
+const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
+  const { recipient } = useAuth(); 
   const [title, setTitle] = useState("");
-  const [items, setItems] = useState([{ category: "", name: "", quantity: 1 }]);
+  const [items, setItems] = useState([{ name: "", quantity: 1, category: "Food" }]);
 
   const handleAddItem = () => {
-    setItems([...items, { category: "", name: "", quantity: 1 }]);
+    setItems([...items, { name: "", quantity: 1, category: "Food" }]);
   };
 
   const handleRemoveItem = (index: number) => {
-    setItems(items.filter((_, i) => i !== index));
+    const updatedItems = items.filter((_, idx) => idx !== index);
+    setItems(updatedItems);
+  };
+
+  const handleChangeItem = (index: number, field: string, value: any) => {
+    const updatedItems = [...items];
+    (updatedItems[index] as any)[field] = value;
+    setItems(updatedItems);
   };
 
   const handleSubmit = () => {
-    if (!title.trim() || items.some((item) => !item.category || !item.name.trim() || item.quantity < 1)) {
-      alert("Заповніть всі поля!");
+    if (!recipient) {
+      alert("Ошибка: получатель не авторизован");
       return;
     }
-    onSubmit({ title, items });
+
+    const newRequirement = {
+      title,
+      items,
+      createdBy: recipient, 
+    };
+
+    onSubmit(newRequirement);
+    setTitle("");
+    setItems([{ name: "", quantity: 1, category: "Food" }]);
     onClose();
   };
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={{ p: 3, bgcolor: "white", mx: "auto", mt: 10, width: 400, borderRadius: 2 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>Нова потреба</Typography>
+      <Box
+        sx={{
+          width: 500,
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          p: 4,
+          mx: "auto",
+          mt: 8,
+          boxShadow: 24,
+        }}
+      >
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Створення потреби
+        </Typography>
+
         <TextField
           fullWidth
           label="Назва потреби"
@@ -54,60 +80,44 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: CreateRequirementMo
         />
 
         {items.map((item, index) => (
-          <Box key={index} sx={{ display: "flex", gap: 1, alignItems: "center", mb: 1 }}>
-            <Select
-              value={item.category}
-              onChange={(e) => {
-                const newItems = [...items];
-                newItems[index].category = e.target.value;
-                setItems(newItems);
-              }}
-              displayEmpty
-              sx={{ flex: 1 }}
-            >
-              <MenuItem value="" disabled>Категорії</MenuItem>
-              {categories.map((cat) => (
-                <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-              ))}
-            </Select>
-
+          <Box key={index} display="flex" alignItems="center" sx={{ mb: 2, gap: 1 }}>
             <TextField
-              label="Назва предмету"
+              label="Назва"
               value={item.name}
-              onChange={(e) => {
-                const newItems = [...items];
-                newItems[index].name = e.target.value;
-                setItems(newItems);
-              }}
-              sx={{ flex: 1 }}
+              onChange={(e) => handleChangeItem(index, "name", e.target.value)}
+              sx={{ flex: 2 }}
             />
-
             <TextField
-              label="Кількість"
+              label="К-сть"
               type="number"
               value={item.quantity}
-              onChange={(e) => {
-                const newItems = [...items];
-                newItems[index].quantity = Math.max(1, parseInt(e.target.value) || 1);
-                setItems(newItems);
-              }}
-              sx={{ width: "80px" }}
+              onChange={(e) => handleChangeItem(index, "quantity", Number(e.target.value))}
+              sx={{ flex: 1 }}
             />
-
-            <IconButton color="error" onClick={() => handleRemoveItem(index)}>
+            <Select
+              value={item.category}
+              onChange={(e) => handleChangeItem(index, "category", e.target.value)}
+              sx={{ flex: 2 }}
+            >
+              {categories.map((cat) => (
+                <MenuItem key={cat} value={cat}>
+                  {cat}
+                </MenuItem>
+              ))}
+            </Select>
+            <IconButton onClick={() => handleRemoveItem(index)}>
               <DeleteIcon />
             </IconButton>
           </Box>
         ))}
 
-        <Button startIcon={<AddIcon />} onClick={handleAddItem} sx={{ mt: 2 }}>
-          Добавити
+        <Button fullWidth variant="outlined" onClick={handleAddItem} sx={{ mb: 2 }}>
+          Додати позицію
         </Button>
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-          <Button onClick={onClose}>Отмена</Button>
-          <Button variant="contained" onClick={handleSubmit}>Створити</Button>
-        </Box>
+        <Button fullWidth variant="contained" onClick={handleSubmit}>
+          Створити
+        </Button>
       </Box>
     </Modal>
   );

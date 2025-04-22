@@ -10,18 +10,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useAuth } from "../context/AuthContext";
-import { Volunteer, Recipient } from "../types";
-
-interface RequirementItem {
-  name: string;
-  quantity: number;
-}
-
-interface Requirement {
-  title: string;
-  createdBy: Recipient;
-  items: RequirementItem[];
-}
+import { Requirement } from "../types";
 
 interface CreateFundModalProps {
   open: boolean;
@@ -60,25 +49,27 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
     setItems((prevItems) =>
       prevItems.map((item, i) =>
         i === index
-          ? { ...item, selectedQuantity: Math.max(0, item.selectedQuantity + delta) }
+          ? {
+              ...item,
+              selectedQuantity: Math.max(0, Math.min(item.quantity, item.selectedQuantity + delta)),
+            }
           : item
       )
     );
   };
-  
 
   const handleNextStep = () => setStep(2);
   const handleBackStep = () => setStep(1);
 
   const handleSubmit = () => {
     const volunteerName =
-      user?.role === "Volunteer"
-        ? `${user?.email || "Анонімний волонтер"}`
-        : "Анонімний волонтер";
+      user?.role === "Volunteer" ? `${user?.email || "Анонімний волонтер"}` : "Анонімний волонтер";
+
+    const recipientName = requirement?.createdBy ? `${requirement?.createdBy.name} ${requirement?.createdBy.surname}` : "Анонімний отримувач";
 
     onSubmit({
       ...fundData,
-      recipient: `${requirement?.createdBy.name} ${requirement?.createdBy.surname}`,
+      recipient: recipientName,
       volunteer: volunteerName,
       items: items
         .filter((item) => item.selectedQuantity > 0)
@@ -104,15 +95,25 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
             {items.map((item, index) => (
               <Box
                 key={index}
-                sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 2 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mt: 2,
+                }}
               >
                 <Typography sx={{ flex: 1 }}>
                   {item.name} ({item.quantity} шт. в потребі)
                 </Typography>
-                <IconButton onClick={() => handleQuantityChange(index, -1)} disabled={item.selectedQuantity === 0}>
+                <IconButton
+                  onClick={() => handleQuantityChange(index, -1)}
+                  disabled={item.selectedQuantity === 0}
+                >
                   <RemoveIcon />
                 </IconButton>
-                <Typography sx={{ width: 30, textAlign: "center" }}>{item.selectedQuantity}</Typography>
+                <Typography sx={{ width: 30, textAlign: "center" }}>
+                  {item.selectedQuantity}
+                </Typography>
                 <IconButton
                   onClick={() => handleQuantityChange(index, 1)}
                   disabled={item.selectedQuantity >= item.quantity}
@@ -163,7 +164,7 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               fullWidth
               disabled
               sx={{ mt: 2 }}
-              value={`${requirement.createdBy.name} ${requirement.createdBy.surname}`}
+              value={`${requirement.createdBy?.name} ${requirement.createdBy?.surname}`}
             />
             <TextField
               label="Волонтер"

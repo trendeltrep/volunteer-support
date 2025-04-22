@@ -1,31 +1,60 @@
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Typography, Stack } from "@mui/material";
+import {
+  Button,
+  Container,
+  Typography,
+  TextField,
+  Stack,
+  Alert,
+} from "@mui/material";
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (role: "Volunteer" | "Recipient") => {
-    login(role === "Volunteer" ? "volunteer@example.com" : "recipient@example.com", "password", role);
-    if (role === "Volunteer") {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = () => {
+    // Проверяем моки
+    if (email === "volunteer@example.com" && password === "password") {
+      login(email, password, "Volunteer");
       navigate("/volunteer");
-    } else {
+    } else if (email === "recipient@example.com" && password === "password") {
+      login(email, password, "Recipient");
       navigate("/recipient");
+    } else {
+      setError("Невірний логін або пароль.");
     }
   };
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>
-        Увійти як:
+        Вхід до системи
       </Typography>
       <Stack spacing={2}>
-        <Button variant="contained" onClick={() => handleLogin("Volunteer")}>
-          Волонтер
-        </Button>
-        <Button variant="contained" color="secondary" onClick={() => handleLogin("Recipient")}>
-          Отримувач
+        <TextField
+          label="Логін"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Пароль"
+          variant="outlined"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          fullWidth
+        />
+        {error && <Alert severity="error">{error}</Alert>}
+        <Button variant="contained" onClick={handleLogin}>
+          Увійти
         </Button>
       </Stack>
     </Container>
