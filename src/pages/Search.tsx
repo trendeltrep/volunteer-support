@@ -1,39 +1,38 @@
 import { useEffect, useState } from "react";
-import { Container, Grid, CircularProgress, Typography, TextField } from "@mui/material";
+import { Container, Grid, CircularProgress, Typography, TextField, Box } from "@mui/material";
 import FundCard from "../components/FundCard";
-import { useAuth } from "../context/AuthContext";  // Импортируем useAuth для доступа к контексту
+import { useAuth } from "../context/AuthContext";
 import { Fund } from "../types";
 import { useNavigate } from "react-router-dom";
 
 const Search = () => {
-  const { funds } = useAuth();  // Получаем данные о сборах из AuthContext
-  const [filteredFunds, setFilteredFunds] = useState<Fund[]>(funds);  // Местное состояние для отфильтрованных сборов
+  const { funds } = useAuth();
+  const [filteredFunds, setFilteredFunds] = useState<Fund[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [query, setQuery] = useState<string>("");  // Состояние для поискового запроса
+  const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
 
-  // Функция для фильтрации сборов по имени
   const filterFunds = (searchQuery: string) => {
     if (!searchQuery.trim()) {
-      setFilteredFunds(funds);  // Если запрос пустой, показываем все сборы
+      setFilteredFunds(funds);
     } else {
       const filtered = funds.filter((fund) =>
-        fund.name.toLowerCase().includes(searchQuery.toLowerCase()) // Фильтруем по имени
+        fund.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredFunds(filtered);
     }
   };
 
-  // Обработка изменений в поисковом поле
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);  // Обновляем состояние запроса
-    filterFunds(event.target.value);  // Фильтруем сборы
+    const value = event.target.value;
+    setQuery(value);
+    filterFunds(value);
   };
 
   useEffect(() => {
-    filterFunds(query);  // Изначально фильтруем сборы по пустому запросу
-  }, [funds]);  // Если данные о сборах изменяются, фильтруем снова
+    filterFunds(query);
+  }, [funds, query]);
 
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
@@ -42,18 +41,25 @@ const Search = () => {
         label="Пошук зборів"
         variant="outlined"
         value={query}
-        onChange={handleSearch}  // Обработчик изменений поиска
+        onChange={handleSearch}
         sx={{ mb: 2 }}
       />
       {loading && <CircularProgress />}
       {error && <Typography color="error">{error}</Typography>}
-      <Grid container spacing={2}>
-        {filteredFunds.map((fund) => (
-          <Grid item key={fund.id} onClick={() => navigate(`/funds/${fund.id}`)} sx={{ cursor: "pointer" }}>
-            <FundCard fund={fund} />
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>Результати пошуку</Typography>
+        {filteredFunds.length === 0 ? (
+          <Typography>Немає відповідних зборів.</Typography>
+        ) : (
+          <Grid container spacing={2}>
+            {filteredFunds.map((fund) => (
+              <Grid item xs={12} sm={6} md={4} lg={4} key={fund.id}>
+                <FundCard fund={fund} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        )}
+      </Box>
     </Container>
   );
 };

@@ -1,50 +1,60 @@
-import { Container, Typography, Paper } from "@mui/material";
+import { Container, Typography, Paper, Box, Grid, Avatar, Button } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
-import { UserAccount, Volunteer } from "../types";
-
-const mockUserAccount: UserAccount = {
-    id: "user-123",
-    email: "volunteer@example.com",
-    role: "Volunteer",
-  };
-  
-const mockVolunteer: Volunteer = {
-    id: "vol-456",
-    name: "Иван",
-    surname: "Петров",
-    phone: "+380501234567",
-    age: 28,
-    rating: 4.7,
-    totalReports: 15,
-    userAccount: mockUserAccount,
-  };
+import FundCard from "../components/FundCard";
+import { useState } from "react";
+import EditVolunteerModal from "../modals/EditVolunteerModal";
 
 const VolunteerProfile = () => {
-  const { user, volunteer } = useAuth();
+  const { user, volunteer, funds } = useAuth();
+  const [editOpen, setEditOpen] = useState(false);
 
-  if (!mockUserAccount) {
-    return <Typography variant="h6">Ви не авторизовані</Typography>;
+  if (!user || user.role !== "Volunteer" || !volunteer) {
+    return <Typography variant="h6" color="error">Доступ заборонено</Typography>;
   }
+
+  const userFunds = funds.filter((fund) => fund.volunteer === user.email);
 
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
-      <Paper sx={{ p: 3 }}>
-        <Typography variant="h4">Профіль</Typography>
-        <Typography variant="h6">Особисті дані</Typography>
-        <Typography>Email: {mockUserAccount.email}</Typography>
-        <Typography>Роль: {mockUserAccount.role}</Typography>
+      <Button variant="outlined" sx={{ mt: 2 }} onClick={() => setEditOpen(true)}>
+        Редагувати профіль
+      </Button>
 
-        {mockVolunteer && (
-          <>
-            <Typography variant="h6" sx={{ mt: 2 }}>Інформація волонтера</Typography>
-            <Typography>Ім'я: {mockVolunteer.name} {mockVolunteer.surname}</Typography>
-            <Typography>Телефон: {mockVolunteer.phone}</Typography>
-            <Typography>Вік: {mockVolunteer.age}</Typography>
-            <Typography>Рейтинг: {mockVolunteer.rating}</Typography>
-            <Typography>Кількість звітів: {mockVolunteer.totalReports}</Typography>
-          </>
-        )}
+      <EditVolunteerModal open={editOpen} onClose={() => setEditOpen(false)} />
+        
+      <Paper sx={{ p: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <Avatar 
+            sx={{ width: 80, height: 80 }}
+            src={user.profilePic || "/default-avatar.png"}
+          />
+          <Box>
+            <Typography variant="h4" gutterBottom>{volunteer.name} {volunteer.surname}</Typography>
+            <Typography variant="body1"><strong>Email:</strong> {user.email}</Typography>
+            <Typography variant="body1"><strong>Телефон:</strong> {volunteer.phone}</Typography>
+            <Typography variant="body1"><strong>Вік:</strong> {volunteer.age}</Typography>
+            <Typography variant="body1"><strong>Роль:</strong> Волонтер</Typography>
+            <Typography variant="body1"><strong>Рейтинг:</strong> {volunteer.rating}</Typography>
+            <Typography variant="body1"><strong>Кількість звітів:</strong> {volunteer.totalReports}</Typography>
+          </Box>
+        </Box>
       </Paper>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>Мої збори</Typography>
+        {userFunds.length === 0 ? (
+          <Typography>Немає створених зборів.</Typography>
+        ) : (
+          <Grid container spacing={2}>
+            {userFunds.map((fund) => (
+              <Grid item xs={12} sm={6} md={4} lg={4} key={fund.id}>
+                <FundCard fund={fund} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Box>
+
     </Container>
   );
 };

@@ -3,15 +3,18 @@ export interface Fund {
   name: string;
   image: string;
   progress: number;
-  isHot: boolean;
   volunteer: string;
   recipient: string;
+  requirementId: string;
+  description: string;
+  link: string; 
 }
+
 
 export interface RequirementItem {
   name: string;
   quantity: number;
-  category: "Food" | "Medicine" |"Equipment" | "Other";
+  category: "Food" | "Medicine" | "Equipment" | "Other";
 }
 
 export interface Requirement {
@@ -24,10 +27,10 @@ export interface Requirement {
     category: string;
   }[];
   funds?: Fund[];
+  deadline?: string;
+  priority?: "High" | "None";
 }
 
-
-  
 export interface SearchParams {
   query: string;
 }
@@ -58,5 +61,3 @@ export interface Recipient {
   needs: string;
   userAccount: UserAccount;
 }
-
-  

@@ -1,12 +1,19 @@
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { Fund } from "../types";
+import { useAuth } from "../context/AuthContext";
 
 const FundCard = ({ fund }: { fund: Fund }) => {
+  const { requirements } = useAuth();
+  const requirement = requirements.find(r => r.id === fund.requirementId);
+  const isHighPriority = requirement?.priority === "High";
+
   return (
     <Card sx={{ width: 300, m: 2 }}>
       <Box sx={{ position: "relative", height: 150, background: `url(${fund.image})`, backgroundSize: "cover" }}>
-        {fund.isHot && (
-          <Typography sx={{ position: "absolute", top: 8, right: 8, background: "red", color: "white", px: 1 }}>
+        {isHighPriority && (
+          <Typography
+            sx={{ position: "absolute", top: 8, right: 8, background: "red", color: "white", px: 1, fontWeight: "bold" }}
+          >
             HOT
           </Typography>
         )}

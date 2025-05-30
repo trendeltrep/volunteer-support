@@ -61,24 +61,24 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
   const handleNextStep = () => setStep(2);
   const handleBackStep = () => setStep(1);
 
-  const handleSubmit = () => {
-    const volunteerName =
-      user?.role === "Volunteer" ? `${user?.email || "Анонімний волонтер"}` : "Анонімний волонтер";
+   const handleSubmit = () => {
+  const volunteerEmail = user?.role === "Volunteer" ? user?.email : "anonym@volunteer";
 
-    const recipientName = requirement?.createdBy ? `${requirement?.createdBy.name} ${requirement?.createdBy.surname}` : "Анонімний отримувач";
+  const recipientName = requirement?.createdBy?.userAccount?.email || "anonym@recipient";
 
-    onSubmit({
-      ...fundData,
-      recipient: recipientName,
-      volunteer: volunteerName,
-      items: items
-        .filter((item) => item.selectedQuantity > 0)
-        .map(({ name, selectedQuantity }) => ({ name, quantity: selectedQuantity })),
-    });
+  onSubmit({
+    ...fundData,
+    recipient: recipientName,
+    volunteer: volunteerEmail,
+    items: items
+      .filter((item) => item.selectedQuantity > 0)
+      .map(({ name, selectedQuantity }) => ({ name, quantity: selectedQuantity })),
+  });
 
-    onClose();
-    setStep(1);
-  };
+  onClose();
+  setStep(1);
+};
+
 
   if (!requirement) return null;
 
@@ -159,6 +159,22 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               value={fundData.link}
               onChange={(e) => setFundData({ ...fundData, link: e.target.value })}
             />
+            <TextField
+              label="Пріоритет потреби"
+              fullWidth
+              disabled
+              sx={{ mt: 2 }}
+              value={requirement.priority === "High" ? "Високий" : "Звичайний"}
+            />
+
+            <TextField
+              label="Дедлайн"
+              fullWidth
+              disabled
+              sx={{ mt: 2 }}
+              value={requirement.deadline ? new Date(requirement.deadline).toLocaleDateString() : "—"}
+            />
+
             <TextField
               label="Отримувач"
               fullWidth

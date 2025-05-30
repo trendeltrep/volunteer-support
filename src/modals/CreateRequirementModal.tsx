@@ -1,5 +1,3 @@
-// src/modals/CreateRequirementModal.tsx
-
 import {
   Modal,
   Box,
@@ -9,6 +7,7 @@ import {
   MenuItem,
   IconButton,
   Typography,
+  InputLabel,
 } from "@mui/material";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -17,9 +16,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const categories = ["Food", "Medicine", "Equipment", "Other"];
 
 const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
-  const { recipient } = useAuth(); 
+  const { recipient } = useAuth();
   const [title, setTitle] = useState("");
   const [items, setItems] = useState([{ name: "", quantity: 1, category: "Food" }]);
+  const [deadline, setDeadline] = useState<Date | null>(null);
+  const [priority, setPriority] = useState<"High" | "None">("None");
 
   const handleAddItem = () => {
     setItems([...items, { name: "", quantity: 1, category: "Food" }]);
@@ -38,19 +39,24 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
 
   const handleSubmit = () => {
     if (!recipient) {
-      alert("Ошибка: получатель не авторизован");
+      alert("Помилка: отримувач не авторизований");
       return;
     }
 
     const newRequirement = {
+      id: Date.now().toString(),
       title,
       items,
-      createdBy: recipient, 
+      createdBy: recipient,
+      deadline: deadline?.toISOString() || null,
+      priority,
     };
 
     onSubmit(newRequirement);
     setTitle("");
     setItems([{ name: "", quantity: 1, category: "Food" }]);
+    setDeadline(null);
+    setPriority("None");
     onClose();
   };
 
@@ -67,9 +73,7 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
           boxShadow: 24,
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Створення потреби
-        </Typography>
+        <Typography variant="h6" sx={{ mb: 2 }}>Створення потреби</Typography>
 
         <TextField
           fullWidth
@@ -78,6 +82,29 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
           onChange={(e) => setTitle(e.target.value)}
           sx={{ mb: 2 }}
         />
+
+          <TextField
+            label="Дедлайн"
+            type="date"
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+            value={deadline ? deadline.toISOString().split("T")[0] : ""}
+            onChange={(e) => setDeadline(new Date(e.target.value))}
+          />
+
+
+        <InputLabel sx={{ mb: 1 }}>Пріоритет</InputLabel>
+        <Select
+          fullWidth
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as "High" | "None")}
+          sx={{ mb: 2 }}
+        >
+          <MenuItem value="None">Без пріоритету</MenuItem>
+          <MenuItem value="High">High</MenuItem>
+        </Select>
 
         {items.map((item, index) => (
           <Box key={index} display="flex" alignItems="center" sx={{ mb: 2, gap: 1 }}>

@@ -24,7 +24,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const LOCAL_STORAGE_KEYS = {
   funds: "app_funds",
   requirements: "app_requirements",
+  volunteer: "app_volunteer",
+  recipient: "app_recipient",
 };
+
 
 // Моки
 const mockVolunteer: Volunteer = {
@@ -59,46 +62,52 @@ const mockRecipient: Recipient = {
 const mockFunds: Fund[] = [
   {
     id: "1",
-    name: "Помощь детям",
+    name: "Допомога дітям",
     image: "/images/fund1.jpg",
     progress: 60,
-    isHot: true,
-    volunteer: "Иван",
-    recipient: "Орфан",
+    volunteer: "volunteer@example.com",
+    recipient: "recipient@example.com",
+    requirementId: "req-1",
+    link: "https://bank.example.com/dytyna",
+    description: "Збір на підтримку дітей у важких умовах."
   },
   {
     id: "2",
-    name: "Медикаменты",
+    name: "Медикаменти",
     image: "/images/fund2.jpg",
     progress: 30,
-    isHot: false,
-    volunteer: "Анна",
-    recipient: "Больница",
-  },
+    volunteer: "volunteer@example.com",
+    recipient: "recipient@example.com",
+    requirementId: "req-2",
+    link: "https://bank.example.com/meds",
+    description: "Збір коштів на ліки та медичні засоби."
+  }
 ];
 
 const mockRequirements: Requirement[] = [
   {
     id: "req-1", 
-    title: "Продукты для семьи",
+    title: "Продукти для сім’ї",
     createdBy: mockRecipient,
     items: [
       { name: "Молоко", quantity: 2, category: "Food" },
-      { name: "Хлеб", quantity: 3, category: "Medicine" },
-      { name: "Макароны", quantity: 1, category: "Food" },
+      { name: "Хліб", quantity: 3, category: "Food" },
     ],
+    deadline: "2025-06-10T00:00:00.000Z",
+    priority: "High",
   },
   {
     id: "req-2", 
-    title: "Одежда для детей",
+    title: "Одяг для дітей",
     createdBy: mockRecipient,
     items: [
-      { name: "Куртка зимняя", quantity: 2, category: "Other" },
-      { name: "Шапка", quantity: 4, category: "Food" },
+      { name: "Куртка", quantity: 2, category: "Equipment" },
+      { name: "Шапка", quantity: 1, category: "Other" },
     ],
+    deadline: "2025-06-20T00:00:00.000Z",
+    priority: "None",
   },
 ];
-
 
 
 const getFromLocalStorage = <T,>(key: string, fallback: T): T => {
@@ -108,8 +117,32 @@ const getFromLocalStorage = <T,>(key: string, fallback: T): T => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserAccount | null>(null);
-  const [volunteer, setVolunteer] = useState<Volunteer | null>(null);
-  const [recipient, setRecipient] = useState<Recipient | null>(null);
+  const [volunteer, setVolunteerState] = useState<Volunteer | null>(() =>
+  getFromLocalStorage(LOCAL_STORAGE_KEYS.volunteer, mockVolunteer)
+);
+
+  const [recipient, setRecipientState] = useState<Recipient | null>(() =>
+    getFromLocalStorage(LOCAL_STORAGE_KEYS.recipient, mockRecipient)
+  );
+
+  const setVolunteer = (volunteer: Volunteer | null) => {
+    if (volunteer) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.volunteer, JSON.stringify(volunteer));
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.volunteer);
+    }
+    setVolunteerState(volunteer);
+  };
+
+  const setRecipient = (recipient: Recipient | null) => {
+    if (recipient) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.recipient, JSON.stringify(recipient));
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.recipient);
+    }
+    setRecipientState(recipient);
+  };
+
 
   const [funds, setFundsState] = useState<Fund[]>(() =>
     getFromLocalStorage(LOCAL_STORAGE_KEYS.funds, mockFunds)

@@ -1,4 +1,4 @@
-import { Container, Grid, CircularProgress, Typography } from "@mui/material";
+import { Container, Grid, CircularProgress, Typography, Box } from "@mui/material";
 import FundCard from "../components/FundCard";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext"; 
@@ -36,13 +36,20 @@ const Home = () => {
 
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
-      <Grid container spacing={2}>
-        {funds.map((fund) => (
-          <Grid item key={fund.id} onClick={() => navigate(`/funds/${fund.id}`)} sx={{ cursor: "pointer" }}>
-            <FundCard fund={fund} />
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>Мої збори</Typography>
+        {funds.length === 0 ? (
+          <Typography>Немає створених зборів.</Typography>
+        ) : (
+          <Grid container spacing={2}>
+            {funds.map((fund) => (
+              <Grid item xs={12} sm={6} md={4} lg={4} key={fund.id} onClick={() => navigate(`/funds/${fund.id}`)}>
+                <FundCard fund={fund}  />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        )}
+      </Box>
     </Container>
   );
 };

@@ -25,9 +25,21 @@ const RequirementCard = ({ requirement, onClick, isClickable = false }: Requirem
           {requirement.title}
         </Typography>
 
-        <Typography variant="body2" sx={{ color: "gray", mb: 2 }}>
+        <Typography variant="body2" sx={{ color: "gray", mb: 1 }}>
           Створив: {requirement.createdBy.name} {requirement.createdBy.surname}
         </Typography>
+
+        {requirement.priority === "High" && (
+          <Typography variant="body2" color="error" sx={{ mb: 1 }}>
+            Пріоритет: High
+          </Typography>
+        )}
+
+        {requirement.deadline && (
+          <Typography variant="body2" sx={{ color: "gray", mb: 2 }}>
+            Дедлайн: {new Date(requirement.deadline).toLocaleDateString()}
+          </Typography>
+        )}
 
         <Box sx={{ mt: 1 }}>
           <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>
