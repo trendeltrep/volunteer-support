@@ -50,7 +50,7 @@ const FundDetails = () => {
       setRequirement(currentRequirement);
       setEditedName(currentFund.name);
       setEditedDescription(currentFund.description);
-      setRating(currentFund.rating || null); // если есть рейтинг - загрузим
+      setRating(currentFund.rating || null); 
     } catch (error) {
       console.error(error);
       setError("Помилка при завантаженні даних");
