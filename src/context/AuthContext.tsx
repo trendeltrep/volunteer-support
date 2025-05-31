@@ -82,7 +82,7 @@ const mockFunds: Fund[] = [
         }
     ],
     status: "disabled",
-    image: "/images/default.jpg",
+    image: "/images/1.jpg",
     progress: 0,
     requirementId: "1748636134737",
     reportUrl: "blob:http://localhost:3000/f00a2ffc-d1b8-43ad-8d27-e78ed73a570e"
@@ -101,7 +101,7 @@ const mockFunds: Fund[] = [
         }
     ],
     status: "disabled",
-    image: "/images/default.jpg",
+    image: "/images/2.jpg",
     progress: 0,
     requirementId: "req-1",
     reportUrl: "blob:http://localhost:3000/b613a630-304c-45ea-821b-eb48dea65d52",

@@ -30,7 +30,6 @@ const Requirements = () => {
     const newFund: Fund = {
       id: Date.now().toString(),
       ...fund,
-      image: "/images/default.jpg",
       progress: 0,
       requirementId: selectedRequirement?.id || "",
       status: "active", 
@@ -38,9 +37,6 @@ const Requirements = () => {
 
     addFund(newFund);
     setSelectedRequirement(null);
-  
-
-
 
   addFund(newFund); 
 

@@ -23,12 +23,14 @@ interface CreateFundModalProps {
     volunteer: string;
     items: { name: string; quantity: number }[];
     status: "active" | "disabled";
+    image: string; // 🆕 добавляем поле image
   }) => void;
 }
 
 const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundModalProps) => {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fundData, setFundData] = useState({
     name: "",
     description: "",
@@ -56,9 +58,28 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
   const handleNextStep = () => setStep(2);
   const handleBackStep = () => setStep(1);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
+
   const handleSubmit = () => {
     const volunteerEmail = user?.role === "Volunteer" ? user?.email : "anonym@volunteer";
     const recipientName = requirement?.createdBy?.userAccount?.email || "anonym@recipient";
+
+    const images = [
+      "/images/1.jpg",
+      "/images/2.jpg",
+      "/images/3.jpg",
+      "/images/4.jpg",
+      "/images/5.jpg",
+      "/images/6.jpg",
+      "/images/7.jpg",
+      "/images/8.jpg",
+    ];
+
+    const final_image = images[Math.floor(Math.random() * images.length)];
+    
 
     onSubmit({
       ...fundData,
@@ -68,10 +89,12 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
         .filter((item) => item.selected)
         .map(({ name, quantity }) => ({ name, quantity })),
       status: "active",
+      image: final_image, 
     });
 
     onClose();
     setStep(1);
+    setSelectedFile(null); 
   };
 
   if (!requirement) return null;
@@ -129,6 +152,14 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               value={fundData.description}
               onChange={(e) => setFundData({ ...fundData, description: e.target.value })}
             />
+
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" fontWeight="bold">
+                Фото збору
+              </Typography>
+              <input type="file" accept="image/*" onChange={handleFileChange} />
+            </Box>
+
             <TextField
               label="Посилання на банку"
               fullWidth
@@ -204,3 +235,5 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
 };
 
 export default CreateFundModal;
+
+
