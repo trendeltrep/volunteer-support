@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { Requirement } from "../types";
+import { useTranslation } from "react-i18next";
 
 interface CreateFundModalProps {
   open: boolean;
@@ -23,7 +24,7 @@ interface CreateFundModalProps {
     volunteer: string;
     items: { name: string; quantity: number }[];
     status: "active" | "disabled";
-    image: string; // 🆕 добавляем поле image
+    image: string;
   }) => void;
 }
 
@@ -31,6 +32,7 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const {i18n} = useTranslation();
   const [fundData, setFundData] = useState({
     name: "",
     description: "",
@@ -63,9 +65,13 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
     setSelectedFile(file);
   };
 
+  const High = i18n.t("High");
+  const NoPriority = i18n.t("NoPriority");
+
   const handleSubmit = () => {
     const volunteerEmail = user?.role === "Volunteer" ? user?.email : "anonym@volunteer";
     const recipientName = requirement?.createdBy?.userAccount?.email || "anonym@recipient";
+
 
     const images = [
       "/images/1.jpg",
@@ -106,7 +112,7 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
           <>
             <Typography variant="h6">{requirement.title}</Typography>
             <Typography variant="body2" sx={{ color: "gray", mt: 1 }}>
-              Виберіть предмети, які підуть у збір:
+              {i18n.t("ChooseItems")}:
             </Typography>
 
             {items.map((item, index) => (
@@ -130,21 +136,21 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               onClick={handleNextStep}
               disabled={items.every((item) => !item.selected)}
             >
-              Далі
+              {i18n.t("Next")}
             </Button>
           </>
         ) : (
           <>
-            <Typography variant="h6">Створення збору</Typography>
+            <Typography variant="h6">{i18n.t("CreateFund")}</Typography>
             <TextField
-              label="Назва збору"
+              label={i18n.t("FundName")}
               fullWidth
               sx={{ mt: 2 }}
               value={fundData.name}
               onChange={(e) => setFundData({ ...fundData, name: e.target.value })}
             />
             <TextField
-              label="Опис"
+              label={i18n.t("FundDescription")}
               fullWidth
               multiline
               rows={3}
@@ -155,28 +161,28 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
 
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2" fontWeight="bold">
-                Фото збору
+                {i18n.t("FundImage")}
               </Typography>
               <input type="file" accept="image/*" onChange={handleFileChange} />
             </Box>
 
             <TextField
-              label="Посилання на банку"
+              label={i18n.t("FundLink")}
               fullWidth
               sx={{ mt: 2 }}
               value={fundData.link}
               onChange={(e) => setFundData({ ...fundData, link: e.target.value })}
             />
             <TextField
-              label="Пріоритет потреби"
+              label={i18n.t("FundPriority")}
               fullWidth
               disabled
               sx={{ mt: 2 }}
-              value={requirement.priority === "High" ? "Високий" : "Звичайний"}
+              value={requirement.priority === "High" ? High : NoPriority}
             />
 
             <TextField
-              label="Дедлайн"
+              label={i18n.t("Deadline")}
               fullWidth
               disabled
               sx={{ mt: 2 }}
@@ -188,43 +194,43 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
             />
 
             <TextField
-              label="Отримувач"
+              label={i18n.t("Recipient")}
               fullWidth
               disabled
               sx={{ mt: 2 }}
               value={`${requirement.createdBy?.name} ${requirement.createdBy?.surname}`}
             />
             <TextField
-              label="Волонтер"
+              label={i18n.t("Volunteer")}
               fullWidth
               disabled
               sx={{ mt: 2 }}
-              value={user?.role === "Volunteer" ? `${user?.email}` : "Анонімний волонтер"}
+              value={user?.role === "Volunteer" ? `${user?.email}` : "-"}
             />
 
             <Box sx={{ mt: 3 }}>
               <Typography variant="body2" fontWeight="bold">
-                Обрані предмети:
+                {i18n.t("ChosenItems")}:
               </Typography>
               {items
                 .filter((item) => item.selected)
                 .map((item, index) => (
                   <Typography key={index} variant="body2">
-                    {item.name} - {item.quantity} шт.
+                    {item.name} - {item.quantity} {i18n.t("Pieces")}.
                   </Typography>
                 ))}
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
               <Button variant="outlined" onClick={handleBackStep}>
-                Назад
+                {i18n.t("Back")}
               </Button>
               <Button
                 variant="contained"
                 onClick={handleSubmit}
                 disabled={items.every((item) => !item.selected)}
               >
-                Створити
+                {i18n.t("CreateFund")}
               </Button>
             </Box>
           </>

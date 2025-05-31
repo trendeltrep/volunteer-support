@@ -9,10 +9,13 @@ import {
   Stack,
   Alert,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const {i18n} = useTranslation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,18 +37,18 @@ const Login = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>
-        Вхід до системи
+        {i18n.t("Login")}
       </Typography>
       <Stack spacing={2}>
         <TextField
-          label="Логін"
+          label={i18n.t("Login")}
           variant="outlined"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           fullWidth
         />
         <TextField
-          label="Пароль"
+          label={i18n.t("Password")}
           variant="outlined"
           type="password"
           value={password}
@@ -54,7 +57,7 @@ const Login = () => {
         />
         {error && <Alert severity="error">{error}</Alert>}
         <Button variant="contained" onClick={handleLogin}>
-          Увійти
+          {i18n.t("Login")}
         </Button>
       </Stack>
     </Container>

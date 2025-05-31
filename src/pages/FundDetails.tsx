@@ -10,6 +10,7 @@ import FundInfo from "../components/FundDetails/FundInfo";
 import FundItems from "../components/FundDetails/FundItems";
 import RequirementInfo from "../components/FundDetails/RequirementInfo";
 import RatingModal from "../modals/RatingModal";
+import { useTranslation } from "react-i18next";
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,8 @@ const FundDetails = () => {
   const [requirement, setRequirement] = useState<Requirement | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const {i18n} = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -138,7 +141,7 @@ const FundDetails = () => {
                 />
               ) : (
                 <Button variant="outlined" onClick={() => setRatingModalOpen(true)}>
-                  Поставити оцінку
+                  {i18n.t("RateFund")}
                 </Button>
               )}
             </Box>
@@ -150,7 +153,7 @@ const FundDetails = () => {
 
           {fund.link && (
             <Button variant="contained" color="primary" href={fund.link} target="_blank" sx={{ mt: 2 }}>
-              Підтримати збір 💙
+              {i18n.t("Donate")}
             </Button>
           )}
 
@@ -158,14 +161,14 @@ const FundDetails = () => {
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2" fontWeight="bold">Звіт:</Typography>
               <a href={fund.reportUrl} target="_blank" rel="noopener noreferrer">
-                Переглянути звіт
+                {i18n.t("WatchReport")}
               </a>
             </Box>
           )}
 
           {fund.rating && (
             <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" fontWeight="bold">Оцінка збору:</Typography>
+              <Typography variant="body2" fontWeight="bold">{i18n.t("FundRate")}:</Typography>
               <Rating value={fund.rating} readOnly />
             </Box>
           )}

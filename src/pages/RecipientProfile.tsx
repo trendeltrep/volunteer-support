@@ -3,13 +3,15 @@ import { Container, Typography, Card, CardContent, Avatar, Box, Button } from "@
 import RequirementCard from "../components/RequirementCard";
 import { useState } from "react";
 import EditRecipientModal from "../modals/EditRecipientModal";
+import { useTranslation } from "react-i18next";
 
 const RecipientProfile = () => {
   const { user, recipient, requirements } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
+  const { i18n } = useTranslation();
 
   if (!user || user.role !== "Recipient" || !recipient) {
-    return <Typography variant="h6" color="error">Доступ заборонено</Typography>;
+    return <Typography variant="h6" color="error">{i18n.t("AccessDenied")}</Typography>;
   }
 
   const userRequirements = requirements.filter(
@@ -20,7 +22,7 @@ const RecipientProfile = () => {
     <Container sx={{ width: 1024, mt: 4 }}>
       <Card sx={{ p: 3 }}>
           <Button variant="outlined" sx={{ mt: 2 }} onClick={() => setEditOpen(true)}>
-            Редагувати профіль
+            {i18n.t("EditProfile")}
           </Button>
 
           <EditRecipientModal open={editOpen} onClose={() => setEditOpen(false)} />
@@ -31,18 +33,18 @@ const RecipientProfile = () => {
           />
           <Box>
             <Typography variant="h4" gutterBottom>{recipient.name} {recipient.surname}</Typography>
-            <Typography variant="body1"><strong>Email:</strong> {user.email}</Typography>
-            <Typography variant="body1"><strong>Телефон:</strong> {recipient.phone}</Typography>
-            <Typography variant="body1"><strong>Роль:</strong> Отримувач</Typography>
-            <Typography variant="body1"><strong>Про себе:</strong> {recipient.needs || "Немає інформації"}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Email")}:</strong> {user.email}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Phone")}:</strong> {recipient.phone}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Role")}:</strong> {i18n.t("Recipient")}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Needs")}:</strong> {recipient.needs || "-"}</Typography>
           </Box>
         </Box>
       </Card>
 
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>Мої потреби</Typography>
+        <Typography variant="h5" gutterBottom>{i18n.t("MyFunds")}</Typography>
         {userRequirements.length === 0 ? (
-          <Typography>Немає створених потреб.</Typography>
+          <Typography>{i18n.t("NoFunds")}.</Typography>
         ) : (
           userRequirements.map((req) => (
             <RequirementCard key={req.id} requirement={req} />

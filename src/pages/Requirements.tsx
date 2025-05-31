@@ -5,6 +5,7 @@ import CreateRequirementModal from "../modals/CreateRequirementModal";
 import CreateFundModal from "../modals/CreateFundModal";
 import RequirementCard from "../components/RequirementCard";
 import { Fund, Requirement } from "../types";
+import { useTranslation } from "react-i18next";
 
 const Requirements = () => {
   const { user, requirements, addRequirement,addFund } = useAuth();
@@ -13,6 +14,8 @@ const Requirements = () => {
   const [selectedRequirement, setSelectedRequirement] = useState<Requirement | null>(null);
 
   const { volunteer, recipient, setRequirements } = useAuth();
+
+  const {i18n} = useTranslation();
 
  
   const handleCardClick = (requirement: Requirement) => {
@@ -51,13 +54,13 @@ const Requirements = () => {
           sx={{ mt: 2, mb: 3, width: "100%" }}
           onClick={() => setOpenRequirementModal(true)}
         >
-          Створити потребу
+          {i18n.t("Create")}
         </Button>
       )}
 
       {requirements.length === 0 ? (
         <Typography variant="h6" textAlign="center" sx={{ mt: 4, color: "gray" }}>
-          Немає потреб
+          {i18n.t("NoRequirements")}
         </Typography>
       ) : (
         requirements.map((requirement, index) => (

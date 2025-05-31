@@ -4,6 +4,7 @@ import FundCard from "../components/FundCard";
 import { useAuth } from "../context/AuthContext";
 import { Fund } from "../types";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Search = () => {
   const { funds } = useAuth();
@@ -12,6 +13,7 @@ const Search = () => {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   const filterFunds = (searchQuery: string) => {
     if (!searchQuery.trim()) {
@@ -38,7 +40,7 @@ const Search = () => {
     <Container sx={{ width: 1024, mt: 4 }}>
       <TextField
         fullWidth
-        label="Пошук зборів"
+        label={i18n.t("Search")}
         variant="outlined"
         value={query}
         onChange={handleSearch}
@@ -47,9 +49,9 @@ const Search = () => {
       {loading && <CircularProgress />}
       {error && <Typography color="error">{error}</Typography>}
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>Результати пошуку</Typography>
+        <Typography variant="h5" gutterBottom>{i18n.t("Result")}</Typography>
         {filteredFunds.length === 0 ? (
-          <Typography>Немає відповідних зборів.</Typography>
+          <Typography>{i18n.t("NoResult")}.</Typography>
         ) : (
           <Grid container spacing={2}>
             {filteredFunds.map((fund) => (

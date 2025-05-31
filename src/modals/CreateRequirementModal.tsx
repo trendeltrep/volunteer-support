@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useTranslation } from "react-i18next";
 
 const categories = ["Food", "Medicine", "Equipment", "Other"];
 
@@ -38,6 +39,8 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
     setItems(updatedItems);
   };
 
+  const {i18n} = useTranslation();
+
   const handleSubmit = () => {
     if (!recipient) {
       alert("Помилка: отримувач не авторизований");
@@ -47,7 +50,7 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
     const newRequirement = {
       id: Date.now().toString(),
       title,
-      description, // 🟩 сохраняем описание
+      description, 
       items,
       createdBy: recipient,
       deadline: deadline?.toISOString() || null,
@@ -56,7 +59,7 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
 
     onSubmit(newRequirement);
     setTitle("");
-    setDescription(""); // 🟩 очищаем поле
+    setDescription(""); 
     setItems([{ name: "", quantity: 1, category: "Food" }]);
     setDeadline(null);
     setPriority("None");
@@ -77,21 +80,21 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
         }}
       >
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Створення потреби
+          {i18n.t("CreateRequirement")}
         </Typography>
 
         <TextField
           fullWidth
-          label="Назва потреби"
+          label={i18n.t("RequirementName")}
+
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           sx={{ mb: 2 }}
         />
-
-        {/* 🟩 Поле для описания */}
         <TextField
           fullWidth
-          label="Опис"
+          label={i18n.t("RequirementDescription")}
+
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           sx={{ mb: 2 }}
@@ -100,7 +103,8 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
         />
 
         <TextField
-          label="Дедлайн"
+          label={i18n.t("Deadline")}
+
           type="date"
           fullWidth
           InputLabelProps={{
@@ -111,27 +115,27 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
           sx={{ mb: 2 }}
         />
 
-        <InputLabel sx={{ mb: 1 }}>Пріоритет</InputLabel>
+        <InputLabel sx={{ mb: 1 }}>{i18n.t("Priority")}</InputLabel>
         <Select
           fullWidth
           value={priority}
           onChange={(e) => setPriority(e.target.value as "High" | "None")}
           sx={{ mb: 2 }}
         >
-          <MenuItem value="None">Без пріоритету</MenuItem>
-          <MenuItem value="High">High</MenuItem>
+          <MenuItem value="None">{i18n.t("NoPriority")}</MenuItem>
+          <MenuItem value="High">{i18n.t("High")}</MenuItem>
         </Select>
 
         {items.map((item, index) => (
           <Box key={index} display="flex" alignItems="center" sx={{ mb: 2, gap: 1 }}>
             <TextField
-              label="Назва"
+              label={i18n.t("ItemName")}
               value={item.name}
               onChange={(e) => handleChangeItem(index, "name", e.target.value)}
               sx={{ flex: 2 }}
             />
             <TextField
-              label="К-сть"
+              label={i18n.t("Quantity")}
               type="number"
               value={item.quantity}
               onChange={(e) => handleChangeItem(index, "quantity", Number(e.target.value))}
@@ -155,11 +159,11 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
         ))}
 
         <Button fullWidth variant="outlined" onClick={handleAddItem} sx={{ mb: 2 }}>
-          Додати позицію
+          {i18n.t("AddItem")}
         </Button>
 
         <Button fullWidth variant="contained" onClick={handleSubmit}>
-          Створити
+          {i18n.t("Create")}
         </Button>
       </Box>
     </Modal>

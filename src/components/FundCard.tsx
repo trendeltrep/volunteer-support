@@ -1,12 +1,13 @@
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { Fund } from "../types";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const FundCard = ({ fund }: { fund: Fund }) => {
   const { requirements } = useAuth();
   const requirement = requirements.find(r => r.id === fund.requirementId);
   const isHighPriority = requirement?.priority === "High";
-
+  const { i18n } = useTranslation();
   return (
     <Card sx={{ width: 300, m: 2 }}>
       <Box sx={{ position: "relative", height: 150, background: `url(${fund.image})`, backgroundSize: "cover" }}>
@@ -21,8 +22,8 @@ const FundCard = ({ fund }: { fund: Fund }) => {
       </Box>
       <CardContent>
         <Typography variant="h6">{fund.name}</Typography>
-        <Typography variant="body2">Організатор: {fund.volunteer}</Typography>
-        <Typography variant="body2">Отримувач: {fund.recipient}</Typography>
+        <Typography variant="body2">{i18n.t("Organized")}: {fund.volunteer}</Typography>
+        <Typography variant="body2">{i18n.t("Recipient")}: {fund.recipient}</Typography>
       </CardContent>
     </Card>
   );

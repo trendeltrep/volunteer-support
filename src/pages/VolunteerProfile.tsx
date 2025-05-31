@@ -3,13 +3,15 @@ import { useAuth } from "../context/AuthContext";
 import FundCard from "../components/FundCard";
 import { useState } from "react";
 import EditVolunteerModal from "../modals/EditVolunteerModal";
+import { useTranslation } from "react-i18next";
 
 const VolunteerProfile = () => {
   const { user, volunteer, funds } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
+  const { i18n } = useTranslation();
 
   if (!user || user.role !== "Volunteer" || !volunteer) {
-    return <Typography variant="h6" color="error">Доступ заборонено</Typography>;
+    return <Typography variant="h6" color="error">{i18n.t("AccessDenied")}</Typography>;
   }
 
   const userFunds = funds.filter((fund) => fund.volunteer === user.email);
@@ -17,7 +19,7 @@ const VolunteerProfile = () => {
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
       <Button variant="outlined" sx={{ mt: 2 }} onClick={() => setEditOpen(true)}>
-        Редагувати профіль
+        {i18n.t("EditProfile")}
       </Button>
 
       <EditVolunteerModal open={editOpen} onClose={() => setEditOpen(false)} />
@@ -30,12 +32,12 @@ const VolunteerProfile = () => {
           />
           <Box>
             <Typography variant="h4" gutterBottom>{volunteer.name} {volunteer.surname}</Typography>
-            <Typography variant="body1"><strong>Email:</strong> {user.email}</Typography>
-            <Typography variant="body1"><strong>Телефон:</strong> {volunteer.phone}</Typography>
-            <Typography variant="body1"><strong>Вік:</strong> {volunteer.age}</Typography>
-            <Typography variant="body1"><strong>Роль:</strong> Волонтер</Typography>
-            <Typography variant="body1"><strong>Рейтинг:</strong> {volunteer.rating}</Typography>
-            <Typography variant="body1"><strong>Кількість звітів:</strong> {volunteer.totalReports}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Email")}:</strong> {user.email}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Phone")}:</strong> {volunteer.phone}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Age")}:</strong> {volunteer.age}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Role")}:</strong> {i18n.t("Volunteer")}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("Rating")}:</strong> {volunteer.rating}</Typography>
+            <Typography variant="body1"><strong>{i18n.t("ReportNumber")}:</strong> {volunteer.totalReports}</Typography>
           </Box>
         </Box>
       </Paper>

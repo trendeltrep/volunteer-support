@@ -3,12 +3,14 @@ import FundCard from "../components/FundCard";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext"; 
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const { funds } = useAuth(); 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const {i18n} = useTranslation();
 
   useEffect(() => {
     if (funds.length === 0) {
@@ -37,9 +39,9 @@ const Home = () => {
   return (
     <Container sx={{ width: 1024, mt: 4 }}>
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>Мої збори</Typography>
+        <Typography variant="h5" gutterBottom>{i18n.t("MyFunds")}</Typography>
         {funds.length === 0 ? (
-          <Typography>Немає створених зборів.</Typography>
+          <Typography>{i18n.t("NoFunds")}.</Typography>
         ) : (
           <Grid container spacing={2}>
             {funds.map((fund) => (
