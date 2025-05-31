@@ -17,7 +17,7 @@ const resources = {
         Priority: "Priority",
         Deadline: "Deadline",
         Items: "Items",
-        Pieces: "pieces",
+        Pieces: "pcs",
         Organized: "Organized by",
         Recipient: "Recipient",
         FundName: "Fund Name",
@@ -74,6 +74,7 @@ const resources = {
         NoResult: "No matching funds found",
         ReportNumber: "Number of Reports",
         AccessDenied: "Access Denied",
+        Report: "Report",
     },
   },
   uk: {
@@ -146,6 +147,7 @@ const resources = {
         NoResult: "Відповідних зборів не знайдено",
         ReportNumber: "Кількість звітів",
         AccessDenied: "Доступ заборонено",
+        Report: "Звіт",
     },
   },
 };

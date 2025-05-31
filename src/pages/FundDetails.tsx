@@ -159,7 +159,7 @@ const FundDetails = () => {
 
           {fund.reportUrl && (
             <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" fontWeight="bold">Звіт:</Typography>
+              <Typography variant="body2" fontWeight="bold">{i18n.t("Report")}:</Typography>
               <a href={fund.reportUrl} target="_blank" rel="noopener noreferrer">
                 {i18n.t("WatchReport")}
               </a>

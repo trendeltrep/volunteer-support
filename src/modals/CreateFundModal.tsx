@@ -124,7 +124,7 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
                     onChange={() => handleToggleSelect(index)}
                   />
                 }
-                label={`${item.name} (${item.quantity} шт.)`}
+                label={`${item.name} (${item.quantity} ${i18n.t("Pieces")}.)`}
                 sx={{ mt: 1 }}
               />
             ))}
