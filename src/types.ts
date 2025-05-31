@@ -1,14 +1,21 @@
 export interface Fund {
   id: string;
   name: string;
+  description: string;
   image: string;
   progress: number;
   volunteer: string;
   recipient: string;
   requirementId: string;
-  description: string;
-  link: string; 
+  link: string;
+  status: "active" | "disabled";
+  reportUrl?: string;
+  items: { name: string; quantity: number }[];
+  rating?: number;
 }
+
+
+
 
 
 export interface RequirementItem {
@@ -18,8 +25,9 @@ export interface RequirementItem {
 }
 
 export interface Requirement {
-  id: string; 
+  id: string;
   title: string;
+  description?: string; 
   createdBy: Recipient;
   items: {
     name: string;
@@ -30,6 +38,7 @@ export interface Requirement {
   deadline?: string;
   priority?: "High" | "None";
 }
+
 
 export interface SearchParams {
   query: string;

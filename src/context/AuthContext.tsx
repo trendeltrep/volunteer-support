@@ -60,29 +60,54 @@ const mockRecipient: Recipient = {
 
 
 const mockFunds: Fund[] = [
-  {
-    id: "1",
-    name: "Допомога дітям",
-    image: "/images/fund1.jpg",
-    progress: 60,
-    volunteer: "volunteer@example.com",
+{
+    id: "1748636166716",
+    name: "123",
+    description: "123",
+    link: "23",
     recipient: "recipient@example.com",
-    requirementId: "req-1",
-    link: "https://bank.example.com/dytyna",
-    description: "Збір на підтримку дітей у важких умовах."
+    volunteer: "volunteer@example.com",
+    items: [
+        {
+            "name": "1",
+            "quantity": 1
+        },
+        {
+            "name": "3",
+            "quantity": 3
+        },
+        {
+            "name": "4",
+            "quantity": 4
+        }
+    ],
+    status: "disabled",
+    image: "/images/default.jpg",
+    progress: 0,
+    requirementId: "1748636134737",
+    reportUrl: "blob:http://localhost:3000/f00a2ffc-d1b8-43ad-8d27-e78ed73a570e"
   },
   {
-    id: "2",
-    name: "Медикаменти",
-    image: "/images/fund2.jpg",
-    progress: 30,
-    volunteer: "volunteer@example.com",
+    id: "1748636222686",
+    name: "333333333",
+    description: "33333333333333",
+    link: "1",
     recipient: "recipient@example.com",
-    requirementId: "req-2",
-    link: "https://bank.example.com/meds",
-    description: "Збір коштів на ліки та медичні засоби."
-  }
-];
+    volunteer: "volunteer@example.com",
+    items: [
+        {
+            "name": "Молоко",
+            "quantity": 2
+        }
+    ],
+    status: "disabled",
+    image: "/images/default.jpg",
+    progress: 0,
+    requirementId: "req-1",
+    reportUrl: "blob:http://localhost:3000/b613a630-304c-45ea-821b-eb48dea65d52",
+    rating: 4
+    }
+  ];
 
 const mockRequirements: Requirement[] = [
   {

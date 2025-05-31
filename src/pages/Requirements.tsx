@@ -4,7 +4,7 @@ import { useAuth} from "../context/AuthContext";
 import CreateRequirementModal from "../modals/CreateRequirementModal";
 import CreateFundModal from "../modals/CreateFundModal";
 import RequirementCard from "../components/RequirementCard";
-import { Requirement } from "../types";
+import { Fund, Requirement } from "../types";
 
 const Requirements = () => {
   const { user, requirements, addRequirement,addFund } = useAuth();
@@ -26,14 +26,20 @@ const Requirements = () => {
       setRequirements(updatedRequirements); 
     };
 
-  const handleCreateFund = (fund: any) => {
-  const newFund = {
-    id: Date.now().toString(),
-    ...fund,
-    image: "/images/default.jpg",
-    progress: 0,
-    requirementId: selectedRequirement?.id || "",
-  };
+    const handleCreateFund = (fund: any) => {
+    const newFund: Fund = {
+      id: Date.now().toString(),
+      ...fund,
+      image: "/images/default.jpg",
+      progress: 0,
+      requirementId: selectedRequirement?.id || "",
+      status: "active", 
+    };
+
+    addFund(newFund);
+    setSelectedRequirement(null);
+  
+
 
 
   addFund(newFund); 

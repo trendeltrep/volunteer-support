@@ -18,6 +18,7 @@ const categories = ["Food", "Medicine", "Equipment", "Other"];
 const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
   const { recipient } = useAuth();
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState(""); // 🟩 новое состояние
   const [items, setItems] = useState([{ name: "", quantity: 1, category: "Food" }]);
   const [deadline, setDeadline] = useState<Date | null>(null);
   const [priority, setPriority] = useState<"High" | "None">("None");
@@ -46,6 +47,7 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
     const newRequirement = {
       id: Date.now().toString(),
       title,
+      description, // 🟩 сохраняем описание
       items,
       createdBy: recipient,
       deadline: deadline?.toISOString() || null,
@@ -54,6 +56,7 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
 
     onSubmit(newRequirement);
     setTitle("");
+    setDescription(""); // 🟩 очищаем поле
     setItems([{ name: "", quantity: 1, category: "Food" }]);
     setDeadline(null);
     setPriority("None");
@@ -73,7 +76,9 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
           boxShadow: 24,
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>Створення потреби</Typography>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Створення потреби
+        </Typography>
 
         <TextField
           fullWidth
@@ -83,17 +88,28 @@ const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
           sx={{ mb: 2 }}
         />
 
-          <TextField
-            label="Дедлайн"
-            type="date"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={deadline ? deadline.toISOString().split("T")[0] : ""}
-            onChange={(e) => setDeadline(new Date(e.target.value))}
-          />
+        {/* 🟩 Поле для описания */}
+        <TextField
+          fullWidth
+          label="Опис"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          sx={{ mb: 2 }}
+          multiline
+          rows={3}
+        />
 
+        <TextField
+          label="Дедлайн"
+          type="date"
+          fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={deadline ? deadline.toISOString().split("T")[0] : ""}
+          onChange={(e) => setDeadline(new Date(e.target.value))}
+          sx={{ mb: 2 }}
+        />
 
         <InputLabel sx={{ mb: 1 }}>Пріоритет</InputLabel>
         <Select

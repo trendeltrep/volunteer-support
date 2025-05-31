@@ -5,10 +5,9 @@ import {
   Typography,
   TextField,
   Button,
-  IconButton,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import { useAuth } from "../context/AuthContext";
 import { Requirement } from "../types";
 
@@ -23,6 +22,7 @@ interface CreateFundModalProps {
     recipient: string;
     volunteer: string;
     items: { name: string; quantity: number }[];
+    status: "active" | "disabled";
   }) => void;
 }
 
@@ -36,24 +36,19 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
   });
 
   const [items, setItems] = useState<
-    { name: string; quantity: number; selectedQuantity: number }[]
+    { name: string; quantity: number; selected: boolean }[]
   >([]);
 
   useEffect(() => {
     if (requirement) {
-      setItems(requirement.items.map((item) => ({ ...item, selectedQuantity: 0 })));
+      setItems(requirement.items.map((item) => ({ ...item, selected: false })));
     }
   }, [requirement]);
 
-  const handleQuantityChange = (index: number, delta: number) => {
+  const handleToggleSelect = (index: number) => {
     setItems((prevItems) =>
       prevItems.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              selectedQuantity: Math.max(0, Math.min(item.quantity, item.selectedQuantity + delta)),
-            }
-          : item
+        i === index ? { ...item, selected: !item.selected } : item
       )
     );
   };
@@ -61,24 +56,23 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
   const handleNextStep = () => setStep(2);
   const handleBackStep = () => setStep(1);
 
-   const handleSubmit = () => {
-  const volunteerEmail = user?.role === "Volunteer" ? user?.email : "anonym@volunteer";
+  const handleSubmit = () => {
+    const volunteerEmail = user?.role === "Volunteer" ? user?.email : "anonym@volunteer";
+    const recipientName = requirement?.createdBy?.userAccount?.email || "anonym@recipient";
 
-  const recipientName = requirement?.createdBy?.userAccount?.email || "anonym@recipient";
+    onSubmit({
+      ...fundData,
+      recipient: recipientName,
+      volunteer: volunteerEmail,
+      items: items
+        .filter((item) => item.selected)
+        .map(({ name, quantity }) => ({ name, quantity })),
+      status: "active",
+    });
 
-  onSubmit({
-    ...fundData,
-    recipient: recipientName,
-    volunteer: volunteerEmail,
-    items: items
-      .filter((item) => item.selectedQuantity > 0)
-      .map(({ name, selectedQuantity }) => ({ name, quantity: selectedQuantity })),
-  });
-
-  onClose();
-  setStep(1);
-};
-
+    onClose();
+    setStep(1);
+  };
 
   if (!requirement) return null;
 
@@ -89,38 +83,21 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
           <>
             <Typography variant="h6">{requirement.title}</Typography>
             <Typography variant="body2" sx={{ color: "gray", mt: 1 }}>
-              Оберіть потрібну кількість предметів для збору:
+              Виберіть предмети, які підуть у збір:
             </Typography>
 
             {items.map((item, index) => (
-              <Box
+              <FormControlLabel
                 key={index}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  mt: 2,
-                }}
-              >
-                <Typography sx={{ flex: 1 }}>
-                  {item.name} ({item.quantity} шт. в потребі)
-                </Typography>
-                <IconButton
-                  onClick={() => handleQuantityChange(index, -1)}
-                  disabled={item.selectedQuantity === 0}
-                >
-                  <RemoveIcon />
-                </IconButton>
-                <Typography sx={{ width: 30, textAlign: "center" }}>
-                  {item.selectedQuantity}
-                </Typography>
-                <IconButton
-                  onClick={() => handleQuantityChange(index, 1)}
-                  disabled={item.selectedQuantity >= item.quantity}
-                >
-                  <AddIcon />
-                </IconButton>
-              </Box>
+                control={
+                  <Checkbox
+                    checked={item.selected}
+                    onChange={() => handleToggleSelect(index)}
+                  />
+                }
+                label={`${item.name} (${item.quantity} шт.)`}
+                sx={{ mt: 1 }}
+              />
             ))}
 
             <Button
@@ -128,7 +105,7 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               variant="contained"
               sx={{ mt: 3 }}
               onClick={handleNextStep}
-              disabled={items.every((item) => item.selectedQuantity === 0)}
+              disabled={items.every((item) => !item.selected)}
             >
               Далі
             </Button>
@@ -172,7 +149,11 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               fullWidth
               disabled
               sx={{ mt: 2 }}
-              value={requirement.deadline ? new Date(requirement.deadline).toLocaleDateString() : "—"}
+              value={
+                requirement.deadline
+                  ? new Date(requirement.deadline).toLocaleDateString()
+                  : "—"
+              }
             />
 
             <TextField
@@ -195,10 +176,10 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
                 Обрані предмети:
               </Typography>
               {items
-                .filter((item) => item.selectedQuantity > 0)
+                .filter((item) => item.selected)
                 .map((item, index) => (
                   <Typography key={index} variant="body2">
-                    {item.name} - {item.selectedQuantity} шт.
+                    {item.name} - {item.quantity} шт.
                   </Typography>
                 ))}
             </Box>
@@ -210,7 +191,7 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
               <Button
                 variant="contained"
                 onClick={handleSubmit}
-                disabled={items.every((item) => item.selectedQuantity === 0)}
+                disabled={items.every((item) => !item.selected)}
               >
                 Створити
               </Button>
