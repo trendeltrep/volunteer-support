@@ -29,15 +29,14 @@ const LOCAL_STORAGE_KEYS = {
 };
 
 
-// Моки
 const mockVolunteer: Volunteer = {
   id: "vol-456",
-  name: "Иван",
-  surname: "Петров",
+  name: "Микола",
+  surname: "Миколайович",
   phone: "+380501234567",
   age: 28,
   rating: 4.7,
-  totalReports: 15,
+  totalReports: 2,
   userAccount: {
     id: "user-123",
     email: "volunteer@example.com",
@@ -47,10 +46,10 @@ const mockVolunteer: Volunteer = {
 
 const mockRecipient: Recipient = {
   id: "rec-789",
-  name: "Анна",
-  surname: "Сидорова",
+  name: "Бригада",
+  surname: "№256",
   phone: "+380501234567",
-  needs: "Помощь в покупке продуктов",
+  needs: "Допмога для сім'ї",
   userAccount: {
     id: "user-789",
     email: "recipient@example.com",
@@ -64,7 +63,7 @@ const mockFunds: Fund[] = [
     id: "1748636166716",
     name: "123",
     description: "123",
-    link: "23",
+    link: "https://send.monobank.ua/jar/AXa4r1ZWdv",
     recipient: "recipient@example.com",
     volunteer: "volunteer@example.com",
     items: [
@@ -91,7 +90,7 @@ const mockFunds: Fund[] = [
     id: "1748636222686",
     name: "333333333",
     description: "33333333333333",
-    link: "1",
+    link: "https://send.monobank.ua/jar/AXa4r1ZWdv",
     recipient: "recipient@example.com",
     volunteer: "volunteer@example.com",
     items: [

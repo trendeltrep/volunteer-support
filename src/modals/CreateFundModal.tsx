@@ -72,7 +72,6 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
     const volunteerEmail = user?.role === "Volunteer" ? user?.email : "anonym@volunteer";
     const recipientName = requirement?.createdBy?.userAccount?.email || "anonym@recipient";
 
-
     const images = [
       "/images/1.jpg",
       "/images/2.jpg",
@@ -86,7 +85,6 @@ const CreateFundModal = ({ open, onClose, requirement, onSubmit }: CreateFundMod
 
     const final_image = images[Math.floor(Math.random() * images.length)];
     
-
     onSubmit({
       ...fundData,
       recipient: recipientName,

@@ -11,7 +11,7 @@ const FundInfo = ({ fund }: { fund: Fund }) =>
 
     return(
   <Box sx={{ mt: 2 }}>
-    <Typography variant="h6">{fund.name}</Typography>
+    <Typography variant="h6">{i18n.t("FundName")}: {fund.name}</Typography>
     <Typography><strong>{i18n.t("FundDescription")}:</strong> {fund.description || NoDescription}</Typography>
     <img
       src={fund.image}

@@ -98,7 +98,6 @@ const FundDetails = () => {
     }
   };
 
-  // Для оценки
   const handleSaveRating = () => {
     if (fund && rating !== null) {
       const updated = funds.map((f) =>

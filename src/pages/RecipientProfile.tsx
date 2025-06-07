@@ -42,7 +42,7 @@ const RecipientProfile = () => {
       </Card>
 
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>{i18n.t("MyFunds")}</Typography>
+        <Typography variant="h5" gutterBottom>{i18n.t("MyRequirements")}</Typography>
         {userRequirements.length === 0 ? (
           <Typography>{i18n.t("NoFunds")}.</Typography>
         ) : (

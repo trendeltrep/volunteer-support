@@ -2,7 +2,6 @@ import { Create, Edit, Email, Login } from "@mui/icons-material";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-// Пример перевода
 const resources = {
   en: {
     translation: {
@@ -75,6 +74,7 @@ const resources = {
         ReportNumber: "Number of Reports",
         AccessDenied: "Access Denied",
         Report: "Report",
+        MyRequirements: "My Requirements",
     },
   },
   uk: {
@@ -148,6 +148,7 @@ const resources = {
         ReportNumber: "Кількість звітів",
         AccessDenied: "Доступ заборонено",
         Report: "Звіт",
+        MyRequirements: "Мої потреби",
     },
   },
 };

@@ -19,7 +19,7 @@ const categories = ["Food", "Medicine", "Equipment", "Other"];
 const CreateRequirementModal = ({ open, onClose, onSubmit }: any) => {
   const { recipient } = useAuth();
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState(""); // 🟩 новое состояние
+  const [description, setDescription] = useState(""); 
   const [items, setItems] = useState([{ name: "", quantity: 1, category: "Food" }]);
   const [deadline, setDeadline] = useState<Date | null>(null);
   const [priority, setPriority] = useState<"High" | "None">("None");
